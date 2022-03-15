@@ -15,25 +15,27 @@ const createUser = async(name, username) => {
 
 describe('Users', () => {
     it('should be able to create a new user', async() => {
-        const user1 = await createUser('John Doe', 'johndoe');
-        const user2 = await createUser('Marcos Castelo', 'mcastelo');
+        const user = await createUser('John Doe', 'johndoe');
         const allUsers = await request(app).get('/users')
 
         expect(201);
-        expect(validate(user1.body.id)).toBe(true);
+        expect(validate(user.body.id)).toBe(true);
 
-        expect(user1.body).toMatchObject({
+        expect(user.body).toMatchObject({
             name: 'John Doe',
             username: 'johndoe',
             todos: []
         })
 
-        expect(user2.body).toMatchObject({
-            name: 'Marcos Castelo',
-            username: 'mcastelo',
-            todos: []
-        });
+        expect(allUsers.body.users.length).toBe(1);
+    })
 
-        expect(allUsers.body.users.length).toBe(2);
+    it('should not be able to create a new user when username already exists', async() => {
+        createUser('John Doe', 'johndoe');
+        const response = await createUser('John Doe', 'johndoe');
+
+        expect(400);
+        expect(response.body.error).toBeTruthy();
+
     })
 })
