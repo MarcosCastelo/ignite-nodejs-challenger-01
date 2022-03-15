@@ -15,7 +15,24 @@ function checksExistUserAccount(request, response, next) {
 }
 
 app.post('/users', (request, response) => {
-    // TODO
+    const { name, username } = request.body;
+
+    const user = {
+        id: uuidv4(),
+        name,
+        username,
+        todos: []
+    }
+
+    users.push(user);
+
+    return response.status(201).json(user)
+})
+
+app.get('/users', (request, response) => {
+    return response.json({
+        users
+    })
 })
 
 app.get('/todos', checksExistUserAccount, (request, response) => {
