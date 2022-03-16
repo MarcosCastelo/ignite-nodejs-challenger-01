@@ -138,4 +138,16 @@ describe('Todos', () => {
         expect(404);
         expect(response.body.error).toBeTruthy();
     })
+
+    it("should be able to list all users's todo", async() => {
+        const userResponse = await createUser('John Doe', 'user8');
+        const todoDate = new Date();
+        const todoResponse = await createTodo('todo 01', todoDate, userResponse.body.username);
+        const getTodosResponse = await request(app)
+            .get('/todos')
+            .set('username', userResponse.body.username);
+
+        expect(getTodosResponse.body).toEqual(expect.arrayContaining([todoResponse.body]))
+
+    })
 })
