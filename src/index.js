@@ -99,7 +99,7 @@ app.patch('/todos/:id/done', checksExistUserAccount, checksExistsTodo, (request,
 app.delete('/todos/:id', checksExistUserAccount, checksExistsTodo, (request, response) => {
     const { user, todo } = request;
     user.todos.splice(todo, 1);
-    return response.json(user.todos)
+    return response.status(204).json(user.todos)
 })
 
 module.exports = app;
