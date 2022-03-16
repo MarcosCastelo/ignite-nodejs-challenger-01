@@ -90,8 +90,10 @@ app.put('/todos/:id', checksExistUserAccount, checksExistsTodo, (request, respon
 
 })
 
-app.patch('/todos/:id/done', checksExistUserAccount, (request, response) => {
-    // TODO
+app.patch('/todos/:id/done', checksExistUserAccount, checksExistsTodo, (request, response) => {
+    const { todo } = request;
+    todo.done = true;
+    response.json(todo);
 })
 
 app.delete('/todos/:id', checksExistUserAccount, checksExistsTodo, (request, response) => {

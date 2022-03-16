@@ -114,4 +114,28 @@ describe('Todos', () => {
         expect(404);
         expect(response.body.error).toBeTruthy();
     })
+
+    it("should be able to mark a todo as done", async() => {
+        const userResponse = await createUser('John Doe', 'user6');
+        const todoDate = new Date()
+        const todoResponse = await createTodo('test todo', todoDate, userResponse.body.username);
+
+        const doneResponse = await request(app)
+            .patch(`/todos/${todoResponse.body.id}/done`)
+            .set('username', userResponse.body.username)
+
+        expect(doneResponse.body).toMatchObject({
+            ...todoResponse.body,
+            done: true
+        })
+    })
+
+    it("should not be able to mark a non existing todo as done", async() => {
+        const userResponse = await createUser('John Doe', 'user7');
+        const response = await request(app)
+            .patch('/todos/invalid-todo-id/done')
+            .set('username', userResponse.body.username);
+        expect(404);
+        expect(response.body.error).toBeTruthy();
+    })
 })
