@@ -76,4 +76,17 @@ describe('Todos', () => {
         })
     });
 
+    it("should not be able to update a non existing todo", async() => {
+        const userResponse = await createUser('John Doe', 'user3');
+        const todoDate = new Date()
+        const response = await request(app)
+            .put('/todos/invalid-todo-id')
+            .send({
+                title: 'update title',
+                deadline: todoDate
+            })
+            .set('username', userResponse.body.username)
+        expect(404);
+        expect(response.body.error).toBeTruthy();
+    });
 })
