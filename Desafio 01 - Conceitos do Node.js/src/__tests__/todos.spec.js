@@ -89,4 +89,29 @@ describe('Todos', () => {
         expect(404);
         expect(response.body.error).toBeTruthy();
     });
+
+    it("should be able to delete a todo", async() => {
+        const userResponse = await createUser('John Doe', 'user4');
+        const todoDate = new Date();
+        const todo1Response = await createTodo('test todo', todoDate, userResponse.body.username);
+        await request(app)
+            .delete(`/todos/${todo1Response.body.id}`)
+            .set('username', userResponse.body.username)
+        expect(204);
+
+        const listResponse = await request(app)
+            .get('/todos')
+            .set('username', userResponse.body.username);
+
+        expect(listResponse.body).toEqual([]);
+    })
+
+    it("should not be able to delete a non existing todo", async() => {
+        const userResponse = await createUser('John Doe', 'user5');
+        const response = await request(app)
+            .delete('/todos/invalid-todo-id')
+            .set('username', userResponse.body.username)
+        expect(404);
+        expect(response.body.error).toBeTruthy();
+    })
 })
